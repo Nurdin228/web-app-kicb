@@ -85,3 +85,15 @@ def user_form(id=None):
 
     return render_template('user_form.html', user=user)
 
+
+# Удаление пользователей (Delete User)
+@app.route('/user/delete/<int:id>')
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    try:
+        db.session.delete()
+        db.session.commit()
+        flash('Пользователь удален', 'success')
+    except Exception as e:
+        flash(f'Ошибка {str(e)}', 'error')
+    return redirect(url_for('users'))
