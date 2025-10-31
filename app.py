@@ -7,7 +7,7 @@ import os
 
 # Конфигурация базы данных SQLite
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite.///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'simple_secret_key'
 
@@ -21,18 +21,32 @@ with app.app_context():
     db.create_all()
 
 
-'''--------USERS--------'''
-# Главная страница - пользователи
+#Валидация для номерров
+def validate_number(phone_number):
+    return (phone_number.startswith('+') or phone_number.startswith('0')) and phone_number[1:].isdigit() and len(phone_number) >= 10
+
+
+# Валидация для email
+def validate_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email) is not None
+
+
+
+# Главная страница 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    users = User.query.all()
+    phones = Phone.query.all()
+    return render_template('index.html', users=users, phones=phones)
 
 
-# Список пользователей (Read User)
-@app.route('/users')
-def users():
-    all_users = User.query.all()
-    return render_template('user.html', users = all_users)
+'''--------USERS--------'''
+# # Список пользователей (Read User)
+# @app.route('/users')
+# def users():
+#     all_users = User.query.all()
+#     return render_template('user.html', users = all_users)
 
 
 # Добавление + редактирование пользователей (Create + Update User)
@@ -50,6 +64,11 @@ def user_form(id=None):
 
         if not name:
             flash('Имя обязательно', 'error')
+            return render_template('user_form.html', user=user)
+        
+        # добавил валидацию
+        if not validate_email(email):
+            flash(f'Неверный email', 'error')
             return render_template('user_form.html', user=user)
         
         try:
@@ -81,7 +100,7 @@ def user_form(id=None):
         try:
             db.session.commit()
             flash(f'Пользователь {action}', 'success')
-            return redirect(url_for('users'))
+            return redirect(url_for('index'))
         except Exception as e:
             flash(f'Ошибка: {str(e)}', 'error')
 
@@ -102,11 +121,11 @@ def delete_user(id):
 
 
 '''--------PHONES--------'''
-# Список телефонов (Read Phones)
-@app.route('/phones')
-def phones():
-    all_phones = Phone.query.all()
-    return render_template('phones.html', phones=all_phones)
+# # Список телефонов (Read Phones)
+# @app.route('/phones')
+# def phones():
+#     all_phones = Phone.query.all()
+#     return render_template('phones.html', phones=all_phones)
 
 
 # Добавление + редактирование телефонов (Create + Update Phone)
@@ -123,6 +142,10 @@ def phone_form(id=None):
         phone_number = request.form['phone_number']
         user_id = int(request.form['user_id'])
 
+        if not validate_number(phone_number):
+            flash('Неверный номер', 'error')
+            return render_template('phone_form.html', phone=phone, users=users)
+
         if phone:
             # Update Phone
             phone.phone_number = phone_number
@@ -138,7 +161,7 @@ def phone_form(id=None):
         try:
             db.session.commit()
             flash(f'Телефон {action}', 'success')
-            return redirect(url_for('phones'))
+            return redirect(url_for('index'))
         except Exception as e:
             flash(f'Ошибка: {str(e)}', 'error')
         
@@ -156,7 +179,7 @@ def delete_phone(id):
     except Exception as e:
         flash(f'Ошибка удаления: {str(e)}', 'error')
     
-    return redirect(url_for('phones'))
+    return redirect(url_for('index'))
     
 
 if __name__ == '__main__':
