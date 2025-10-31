@@ -46,14 +46,14 @@ def user_form(id=None):
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
-        dob_str = request.form['date_of_birth']
+        date_of_birth_str = request.form['date_of_birth']
 
         if not name:
             flash('Имя обязательно', 'error')
             return render_template('user_form.html', user=user)
         
         try:
-            date_of_birth = datetime.strptime(dob_str, '%Y-%m-%d').date()
+            date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d').date()
         except ValueError:
             flash('Неверная дата (YYYY-MM-DD)', 'error')
             return render_template('user_form.html', user=user)
@@ -65,14 +65,16 @@ def user_form(id=None):
             return render_template('user_form.html', user=user)
         
         if user:
-            # Update
+            # Update User
             user.name = name
             user.email = email
             user.date_of_birth = date_of_birth
-            action = 'дбновлен'
+            action = 'обновлен'
         else:
-            # Create
-            use = User(name=name, email=email, date_of_birth=date_of_birth)
+            # Create User
+            user = User(name=name, 
+                        email=email, 
+                        date_of_birth=date_of_birth)
             db.session.add(user)
             action = 'добавлен'
 
@@ -91,9 +93,71 @@ def user_form(id=None):
 def delete_user(id):
     user = User.query.get_or_404(id)
     try:
-        db.session.delete()
+        db.session.delete(user)
         db.session.commit()
         flash('Пользователь удален', 'success')
     except Exception as e:
-        flash(f'Ошибка {str(e)}', 'error')
+        flash(f'Ошибка при удаленини: {str(e)}', 'error')
     return redirect(url_for('users'))
+
+
+'''--------PHONES--------'''
+# Список телефонов (Read Phones)
+@app.route('/phones')
+def phones():
+    all_phones = Phone.query.all()
+    return render_template('phones.html', phones=all_phones)
+
+
+# Добавление + редактирование телефонов (Create + Update Phone)
+@app.route('/phones/form', methods=['GET', 'POST'])
+@app.route('/phones/form/<int:id>', methods=['GET', 'POST'])
+def phone_form(id=None):
+    phone = None
+    if id:
+        phone = Phone.query.get_or_404(id)
+    
+    users = User.query.all()
+
+    if request.method == 'POST':
+        phone_number = request.form['phone_number']
+        user_id = int(request.form['user_id'])
+
+        if phone:
+            # Update Phone
+            phone.phone_number = phone_number
+            phone.user_id = user_id
+            action = 'обновлен'
+        else:
+            # Create Phone
+            phone = Phone(phone_number=phone_number, 
+                          user_id=user_id)
+            db.session.add(phone)
+            action = 'добавлен'
+
+        try:
+            db.session.commit()
+            flash(f'Телефон {action}', 'success')
+            return redirect(url_for('phones'))
+        except Exception as e:
+            flash(f'Ошибка: {str(e)}', 'error')
+        
+    return render_template('phone_form.html', phone=phone, users=users)
+
+
+# Удаление телефона (Delete Phone)
+@app.route('/phones/delete/<int:id>')
+def delete_phone(id):
+    phone = Phone.query.get_or_404(id)
+    try:
+        db.session.delete(phone)
+        db.session.commit()
+        flash('Телефон удален', 'success')
+    except Exception as e:
+        flash(f'Ошибка удаления: {str(e)}', 'error')
+    
+    return redirect(url_for('phones'))
+    
+
+if __name__ == '__main__':
+    app.run(debug=True)
