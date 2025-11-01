@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Пользователи -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Пользователи</h5>
+                <a href="{{ url_for('user_form') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus"></i> Добавить
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if users %}
+                <div class="list-group list-group-flush">
+                    {% for user in users %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ user.name }}</strong><br>
+                                <small class="text-muted">{{ user.email }} | {{ user.date_of_birth }}</small>
+                                {% if user.phones %}
+                                <ul class="list-unstyled mt-2 mb-0 ps-3">
+                                    {% for phone in user.phones %}
+                                    <li class="text-primary"><i class="bi bi-telephone"></i> {{ phone.phone_number }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-muted small mt-1 mb-0">Нет телефонов</p>
+                                {% endif %}
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{ url_for('user_form', id=user.id) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ url_for('delete_user', id=user.id) }}" 
+                                   class="btn btn-sm btn-outline-danger" 
+                                   onclick="return confirm('Удалить пользователя? Все телефоны удалятся.')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted p-4">Нет пользователей</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Телефоны -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-telephone"></i> Телефоны</h5>
+                <a href="{{ url_for('phone_form') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus"></i> Добавить
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if phones %}
+                <div class="list-group list-group-flush">
+                    {% for phone in phones %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ phone.phone_number }}</strong><br>
+                            <small class="text-muted">→ {{ phone.user.name }} ({{ phone.user.email }})</small>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{{ url_for('phone_form', id=phone.id) }}" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ url_for('delete_phone', id=phone.id) }}" 
+                               class="btn btn-sm btn-outline-danger" 
+                               onclick="return confirm('Удалить телефон?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted p-4">Нет телефонов</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
