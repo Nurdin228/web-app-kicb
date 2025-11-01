@@ -117,7 +117,7 @@ def delete_user(id):
         flash('Пользователь удален', 'success')
     except Exception as e:
         flash(f'Ошибка при удаленини: {str(e)}', 'error')
-    return redirect(url_for('users'))
+    return redirect(url_for('index'))
 
 
 '''--------PHONES--------'''
