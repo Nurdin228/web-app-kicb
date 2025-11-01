@@ -1,0 +1,106 @@
+/* body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.container {
+    padding: 20px;
+} */
+
+/* Карточки */
+/* .card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+.bg-primary { background: linear-gradient(135deg, #4361ee, #3f37c9) !important; }
+.bg-success { background: linear-gradient(135deg, #06d6a0, #0a9396) !important; } */
+
+/* Списки */
+/* .list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 0.9rem 1.25rem;
+    background: #fff;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+} */
+
+/* Иконки в телефонах у пользователя */
+/* .user-phones {
+    margin-top: 8px;
+    padding-left: 20px;
+    font-size: 0.9rem;
+}
+
+.user-phones li {
+    color: #06d6a0;
+    margin-bottom: 4px;
+}
+
+.user-phones i {
+    font-size: 0.8rem;
+    margin-right: 4px;
+} */
+
+/* Кнопки */
+/* .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+}
+
+.btn-sm {
+    font-size: 0.8rem;
+}
+
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #d97706;
+}
+
+.btn-outline-warning:hover {
+    background: #fff3cd;
+    color: #d97706;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background: #f8d7da;
+} */
+
+/* Пустые состояния */
+/* .text-muted {
+    font-style: italic;
+} */
+
+/* Адаптивность */
+/* @media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    .btn-group .btn {
+        margin-bottom: 4px;
+    }
+} */
